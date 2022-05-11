@@ -41,7 +41,7 @@ get_allssr(){
 			fi
 		fi
 	done
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 筛选完毕，节点编号： $port，其ping值：$ping_ttl ms" >> /tmp/syslog.log
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】筛选完毕，新的可用节点编号： $port，ping值：$ping_ttl ms." >> /tmp/syslog.log
 	if [ $ping_ttl != 99999 ] && [ $port != 0 ]
 		then
 		#设置新节点
@@ -62,7 +62,7 @@ get_allssr(){
 		--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36' \
 		--header 'X-Requested-With:  XMLHttpRequest' \
 		--data-urlencode 'connect_action=Reconnect'
-		echo "$(date "+%Y-%m-%d %H:%M:%S") 【UPDATE】设置新节点成功，节点编号： $port" >> /tmp/syslog.log
+		echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】 恭喜！设置新节点成功！节点编号： $port" >> /tmp/syslog.log
 	fi
 }
 
@@ -70,11 +70,11 @@ get_allssr(){
 /usr/bin/ss-check www.youtube.com 80 3 1
 check=$?
 if [ "$check" == "0" ]; then
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 【Success】Check YouTube Proxy Pass." >> /tmp/syslog.log
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】~~~ YouTube 畅通无阻！" >> /tmp/syslog.log
 	break
 else
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 【ERROR】Check YouTube Proxy Fail. 触发ping全部节点" >> /tmp/syslog.log
-	#请求头中信息可以在浏览器登录路由器后获取到（开发者调试工具中）
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】不好！网络异常！！！尝试替换新节点。" >> /tmp/syslog.log
+	#请求头中的 Authorization 可以在浏览器登录一次路由器后获取到（开发者调试工具中）
 	curl --location --request POST 'http://172.19.56.1/applydb.cgi?useping=1&p=ss' \
 	--header 'Accept:  text/plain, */*; q=0.01' \
 	--header 'Accept-Encoding:  gzip, deflate' \
