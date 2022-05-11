@@ -1,10 +1,14 @@
 #!/bin/sh
 
+# 路由型号：Redmi-AC2100
+# 固件PADAVN 3.4.3.9-099
+
 # 检查网络是否畅通 telnet www.youtube.com 80
-# 调用SSR ping全部
-# 调用获取SSR节点 并解析出最快节点
-# 设置节点 set global_server=78
-# 重启 /usr/bin/shadowsocks.sh reserver &
+# 模拟调用SSR ping全部 
+# 等待1分钟后 调用获取SSR节点 并解析出最快节点
+# 设置节点
+# 模拟控制台点击“重连接”
+# 设置系统调度任务5分钟检查一次 */5 * * * * /etc/storage/SSR_AutoUpdate.sh > /dev/null 2>&1
 
 #解析返回值 并设置新的可用节点
 get_allssr(){
@@ -37,7 +41,7 @@ get_allssr(){
 			fi
 		fi
 	done
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 筛选完毕，节点编号： $port，其ping值：$ping_ttl ms" >> /etc/storage/logs/ssr_updateport.log
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 筛选完毕，节点编号： $port，其ping值：$ping_ttl ms" >> /tmp/syslog.log
 	if [ $ping_ttl != 99999 ] && [ $port != 0 ]
 		then
 		#设置新节点
@@ -58,7 +62,7 @@ get_allssr(){
 		--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36' \
 		--header 'X-Requested-With:  XMLHttpRequest' \
 		--data-urlencode 'connect_action=Reconnect'
-		echo "$(date "+%Y-%m-%d %H:%M:%S") 【UPDATE】设置新节点成功，节点编号： $port" >> /etc/storage/logs/ssr_updateport.log
+		echo "$(date "+%Y-%m-%d %H:%M:%S") 【UPDATE】设置新节点成功，节点编号： $port" >> /tmp/syslog.log
 	fi
 }
 
@@ -66,11 +70,11 @@ get_allssr(){
 /usr/bin/ss-check www.youtube.com 80 3 1
 check=$?
 if [ "$check" == "0" ]; then
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 【Success】Check YouTube Proxy Pass." >> /etc/storage/logs/ssr_updateport.log
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 【Success】Check YouTube Proxy Pass." >> /tmp/syslog.log
 	break
 else
-	echo "$(date "+%Y-%m-%d %H:%M:%S") 【ERROR】Check YouTube Proxy Fail. 触发ping全部节点" >> /etc/storage/logs/ssr_updateport.log
-	#请求头中的 Authorization 可以在浏览器登录一次路由器后获取到（开发者调试工具中）
+	echo "$(date "+%Y-%m-%d %H:%M:%S") 【ERROR】Check YouTube Proxy Fail. 触发ping全部节点" >> /tmp/syslog.log
+	#请求头中信息可以在浏览器登录路由器后获取到（开发者调试工具中）
 	curl --location --request POST 'http://172.19.56.1/applydb.cgi?useping=1&p=ss' \
 	--header 'Accept:  text/plain, */*; q=0.01' \
 	--header 'Accept-Encoding:  gzip, deflate' \
