@@ -15,7 +15,7 @@ get_allssr(){
 	port=0
 	ping_ttl=99999;
 	OLDPORT=`nvram get global_server`
-	RESULT=`curl --location --request GET 'http://172.19.56.1/dbconf?p=ss'`
+	RESULT=`curl --location --request GET 'http://xx.xx.xx.xx/dbconf?p=ss'`
 	#去头
 	RESULT=`echo $RESULT | sed 's/var db_ss=(function() { var o={}; /''/g'`
 	#去尾
@@ -47,19 +47,19 @@ get_allssr(){
 		#设置新节点
 		nvram set global_server=$port
 		#触发重连按钮 使配置生效
-		curl --location --request POST 'http://172.19.56.1/Shadowsocks_action.asp' \
+		curl --location --request POST 'http://xx.xx.xx.xx/Shadowsocks_action.asp' \
 		--header 'Accept:  application/json, text/javascript, */*; q=0.01' \
 		--header 'Accept-Encoding:  gzip, deflate' \
 		--header 'Accept-Language:  zh-CN,zh;q=0.9' \
-		--header 'Authorization:  Basic YWRtaW46Q2xpbmcqMDAwMDA=' \
+		--header 'Authorization:  Basic YWRxxxxQxxxxMDAwMDA=' \
 		--header 'Connection:  keep-alive' \
 		--header 'Content-Length:  24' \
 		--header 'Content-Type: application/x-www-form-urlencoded' \
 		--header 'DNT:  1' \
-		--header 'Host:  172.19.56.1' \
-		--header 'Origin:  http://172.19.56.1' \
-		--header 'Referer:  http://172.19.56.1/Shadowsocks.asp' \
-		--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36' \
+		--header 'Host:  xx.xx.xx.xx' \
+		--header 'Origin:  http://xx.xx.xx.xx' \
+		--header 'Referer:  http://xx.xx.xx.xx/Shadowsocks.asp' \
+		--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
 		--header 'X-Requested-With:  XMLHttpRequest' \
 		--data-urlencode 'connect_action=Reconnect'
 		echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】 恭喜！设置新节点成功！节点编号： $port" >> /tmp/syslog.log
@@ -75,19 +75,19 @@ if [ "$check" == "0" ]; then
 else
 	echo "$(date "+%Y-%m-%d %H:%M:%S") 【SSR_AUTO_UPDATE】不好！网络异常！！！尝试替换新节点。" >> /tmp/syslog.log
 	#请求头中的 Authorization 可以在浏览器登录一次路由器后获取到（开发者调试工具中）
-	curl --location --request POST 'http://172.19.56.1/applydb.cgi?useping=1&p=ss' \
+	curl --location --request POST 'http://xx.xx.xx.xx/applydb.cgi?useping=1&p=ss' \
 	--header 'Accept:  text/plain, */*; q=0.01' \
 	--header 'Accept-Encoding:  gzip, deflate' \
 	--header 'Accept-Language:  zh-CN,zh;q=0.9' \
-	--header 'Authorization:  Basic YWRtaW46Q2xpbmcqMDAwMDA=' \
+	--header 'Authorization:  Basic xxRxxxxxxxxxxxA=' \
 	--header 'Connection:  keep-alive' \
 	--header 'Content-Length:  9' \
 	--header 'Content-Type: application/x-www-form-urlencoded' \
 	--header 'DNT:  1' \
-	--header 'Host:  172.19.56.1' \
-	--header 'Origin:  http://172.19.56.1' \
-	--header 'Referer:  http://172.19.56.1/Shadowsocks.asp' \
-	--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36' \
+	--header 'Host:  xx.xx.xx.xx' \
+	--header 'Origin:  http://xx.xx.xx.xx' \
+	--header 'Referer:  http://xx.xx.xx.xx/Shadowsocks.asp' \
+	--header 'User-Agent:  Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
 	--header 'X-Requested-With:  XMLHttpRequest' \
 	--data-urlencode '1=allping'
 	#1分钟后获取Ping结果
